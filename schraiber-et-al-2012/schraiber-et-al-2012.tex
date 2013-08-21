@@ -1,0 +1,113 @@
+\documentclass[12pt]{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage[numbers]{natbib}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{fullpage}
+\usepackage{amsmath}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+
+\begin{document}
+
+\title{Notes on Schraiber et al., 2012 - \emph{Genomic Tests on Variation in Inbreeding Among Individuals and Among Chromosomes}}
+\author{Vince Buffalo}
+\maketitle
+
+\section{Levene's 1949 Model: The Probability of Heterzygotes with No Inbreeding}
+
+First, we consider Schraiber's \autoref{eq:schraiber:01}, the
+probability of heterzygotes with no inbreeding derived from
+\citep{Levene:1949va}. The setup is that we have $n$ diploid
+individuals, giving us $2n$ possible ``bins'' to put $2n$ balls
+into. If we only consider polymorphic sites (assuming biallelic),
+there are two alleles: ancestral and derived. For our $2n$ alleles in
+our sample, call $i$ the number of derived alleles. $i$ is bound
+between $1$ and $2n-1$ (that is, $i \in \{1, 2, \ldots, 2n-1\}$) since
+if $i=0$, we have no derived alleles and our site is not polymorphic,
+and if $i=2n$, our site is entirely derived alleles, and again, our
+site is no polymorphic.
+
+There are three additional constraints. First, if we define $h$ as the
+number of heterozygous individuals (that is, individuals with one of
+the $i$ derived alleles and one of the $2n-i$ ancestral alleles), then
+if $h$ is odd, $i$ must be odd, and second, if $h$ is even, then $i$
+must be even. If this is unclear, consider the case where $h$ is
+even. If an additional derived allele is added, it either goes into a
+heterozygous individual, and makes it homozygous (so $h' = h - 1$,
+making $h$ odd) or it makes a homozygous individual heterzygous (so
+$h' = h + 1$, making $h$ odd). Finally, the last constraint is that $h
+\le \min(i, 2n-i)$, which can be understood as the fewest number of
+heterzygotes you can have is the minimum number of derived or
+ancestral alleles. This is easy intuitively too: in the extreme case
+that if \emph{every} minor allele ($i$ or $2n-i$) was in a
+heterozgyous individual, then the number of minor alleles is the most
+possible heterozgotes you could have.
+
+Schraiber uses a classic colored ball and bin combinatorial approach
+equation borrowed from \citep{Haldane:1954ts} to look at the
+probability of heterozygotes given $i$ and $n$.
+
+
+First, disregard the fact that there
+are bins (our diploid individuals) and note that there are $(2n)!$
+ways of rearranging all the colored balls.
+
+ model to derive his
+equation \autoref{eq:schraiber:01}. 
+
+\begin{equation} \label{eq:schraiber:01}
+  \text{Pr}(h \mid i, n) = \frac{i!(2n-1)!}{(2n)!}
+\end{equation}
+
+\bibliographystyle{plainnat}
+\bibliography{schraiber-et-al-2012-bib}
+
+\end{document}
