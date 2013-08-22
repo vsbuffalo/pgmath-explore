@@ -127,9 +127,17 @@ balls. This leaves us with:
 \frac{(2n)!}{i! (2n - i)!}
 \end{equation}
 
-arrangements of $i$ white balls and $2n - i$ red balls. Now, let
-$n_2$, $n_1$, and $n_0$ be the number of bins with 2, 1, and 0 white
-balls. Immediately, notice that $n_1 = h$, the number of
+arrangements of $i$ white balls and $2n - i$ red balls, the well-known
+binomial coefficient. In this case, our problem can be set up this
+way: given numbered (distinguishable) balls, how many ways are there
+to grab $i$ and paint them white? Note that certain arrangements of
+balls, i.e. for $n = 5$ individuals we will have arrangements that are
+lead to the same genotype: $(0, 1) (1, 0), (0, 0) (1, 1) (0, 1)$ and
+$(1, 0) (1, 0), (0, 0) (1, 1) (0, 1)$ are the same. We will account
+for this in a bit.
+
+Now, let $n_2$, $n_1$, and $n_0$ be the number of bins with 2, 1, and
+0 white balls. Immediately, notice that $n_1 = h$, the number of
 heterozygotes, and $n_0 + n_1 + n_2 = n$.
 
 Since $i$ is the number of white balls (derived alleles), the number
@@ -145,36 +153,37 @@ balls) we use the same logic. There are $i$ white balls, but we lose
 $h$ of these two homozygous bins. Thus, we are left with $(i - h)/2$
 bins that are homozygous derived.
 
-Finally, $n_2$, $n_1$, and $n_0$ give us the counts for each of these
+Next, $n_2$, $n_1$, and $n_0$ give us the counts for each of these
 events, as a function of $i$, $h$, and $n$. With these components, we
-can now get the number of distinguishable ways to assign \emph{pairs}
-of balls to $n$ bins. This is:
+can now get the number of distinguishable ways to balls to our three
+\emph{classes}: $n_0$, $n_1$, and $n_2$. The number of ways of
+assigning $n$ objects to classes of sizes $n_0$, $n_1$, and $n_2$ is
+given by the multinomial coefficient:
 
-\begin{equation} \label{eq:02}
-\frac{2^{n_1} n!}{n_2! n_1! n_0!}
+\begin{equation} \label{eq:03}
+\frac{n!}{n_2! n_1! n_0!}
 \end{equation}
 
-which can be intuitively understood as there are $n!$ distinct
-sequences of the pairs, but since we don't care about the $n_2!$ ways
-of permuting the homozygous derived bins, we divide by those (and the
-same for $n_1!$ and $n_0!$). Note too that since each of the $n_1$
-heterozygote bins has two arrangements (i.e. $(\text{w}, \text{r})$
-and $(\text{r}, \text{w})$, and we don't care about the difference),
-we correct for this with $2^{n_1}$. This leaves
-\autoref{eq:schraiber:01}, which is simply a rearranged
-\autoref{eq:02} over \autoref{eq:01}.
+However, note that this is off by a factor of $2^{n_1}$, because each
+of the $n_1$ heterozygotes can be arranged 2 ways, not just one. Thus
+we multiple by $2^{n_1}$, which now counts \emph{all} the permutations
+of heterozygotes. This is quite important, as we are also counting all
+possible permutations of balls in heterozygotes in the binomial
+coefficient above too.
+
+Finally, this leaves \autoref{eq:schraiber:01}, which is simply a
+rearranged \autoref{eq:02} over \autoref{eq:01}.
 
 \begin{equation} \label{eq:schraiber:01}
   \text{P}(h \mid i, n) = \frac{i!(2n-1)!}{(2n)!}\frac{2^h n!}{((i-h)/2)!h!((2n - i - h)/2)!}
 \end{equation}
 
-\section{Single Inbreed Coefficient}
+\section{Single Inbreeding Coefficient for a Sample}
 
 Next, Schraiber looks at a single inbreed coefficient for the sample,
 $F$. He uses $F$ as the probability of being identical by descent and
-$1-F$ as the complement of this (I think Mal\'{e}cot was the first to
-see $F$ this way). A probabilistic interpretation of $F$ requires $0
-\le F \le 1$ (no excess of heterozygotes).
+$1-F$ as the complement of this. A probabilistic interpretation of $F$
+requires $0 \le F \le 1$ (no excess of heterozygotes).
 
 Schraiber assumes that the $j$ individuals at a polymorphic site that
 are i.b.d is binomially distributed with $p = F$. Thus:
@@ -191,42 +200,64 @@ if $i$ is odd.
 
 Now, let $k$ be the number of individuals that are homozygous for the
 derived allele because they are i.b.d (given we know $j$). $k$ has a
-hypergeometric distribution:
+hypergeometric distribution (note that there was another typo in the
+original paper here):
 
 \begin{equation} \label{eq:schraiber:03}
-\text{P}(k \mid j, i', n') = \left[  {i'/2 \choose k} \left( n' - i'/2j - k \right) / {n' \choose j} \right]
+\text{P}(k \mid j, i', n') = \frac{  {i'/2 \choose k} { n' - i' \choose j - k } } { {n' \choose j}}
 \end{equation}
 
-This is a hypergeometric distribution, giving the probability of a $k$
-draws of success (autozygosity) with $i'/2$ ``successes'' (in our
-case, the number of derived alleles) in the population of size $n'$,
-given $j$, our number of i.b.d. alleles in the \emph{sample}. 
+This is saying, in the context of a hypergeometric distribution, if I
+draw $j$ individuals (where $j$ is the number of i.b.d. individuals,
+either derived or ancestral alleles), what's the probability of seeing
+$k$ autozygous derived alleles given there are $i/2$ pairs to choose
+from in a population of size $n$? To me, it seemed strange that we
+worry about draws of size $j$, but our reasoning for this is is that
+this entire equation will become used as a conditional in a joint
+density, and summed across all possible $j$ since we are uncertain
+about it.
 
-Given $j$ (the number of i.b.d. alleles and $k$ (the number of derived
-i.b.d. allels), the number of individuals heterozygous at a site has
-the distribution given by \autoref{eq:schraiber:01} with $n = n - j$
-and $i = i - 2k$ (the paper says $j = j - 2k$ but there's no $j$ in
-equation (1), so I believe this is a typo). Summing over $j$ and $k$
-gives us the density:
+Given $j$ (the number of i.b.d. individuals) and $k$ (the number of
+derived i.b.d. alleles), the number of individuals heterozygous at a
+site has the distribution given by \autoref{eq:schraiber:01} with $n =
+n - j$ and $i = i - 2k$ (the paper says $j = j - 2k$ but there's no
+$j$ in equation (1), so I believe this is another typo). 
+
+Finally, we want an expression for $P(h \mid i, n, F)$ (and we see
+$h$, $i$, and $n$ in our real data), so we take the marginal densities
+over the unknowns $j$ (number of i.b.d individuals) and $k$ (number of
+autozygous derived) in our joint likelihood built up from the
+conditionals:
 
 \begin{equation} \label{eq:schraiber:04}
-\text{P}(j \mid i, n, F) = \sum_{j=0}^{n'}\sum_{k=0}^{j} P(h, i - 2k, n - j) P(j \mid F, n') P(k \mid j, i', n')
+\text{P}(h \mid i, n, F) = \sum_{j=0}^{n'}\sum_{k=0}^{j} P(h, i - 2k, n - j) P(j \mid F, n') P(k \mid j, i', n')
 \end{equation}
 
-This equation can then be used as a likelihood for each derived allele
-$i$, by ``replacing $n$ by $n_i$, the observed number of sites at
-which there are $i$ derived alleles, and $h$ by $h_i$, the number of
-sites that are heterozygous.'' Why would estimating the probability of
-i.b.d. per each $i$ ($\hat{F_i}$) in the sample be useful? If $i$ is
-low (there are few derived alleles in the sample), it is probably
-young (think coalescent theory). Deviation from HWF in these may
-indicate selection.
+Thus, this serves as our likelihood model to estimate $F$ using MLE
+approaches.
 
-Or, a single $F$ for all $i$. To do this, we assume each $i$ are
-independent and multiple them to get a MLE for $F$. A likelihood ratio
-test can be used to test whether $\hat{F_i}$ are equal.
+\subsection{$\hat{F_i}$: $F$ per a Certain Number of Derived Alleles, Across Sites}
 
-\section{Individual Specific Inbreeding Coefficient}
+\autoref{eq:schraiber:04} can then be used as a likelihood for each
+derived allele $i$, by ``replacing $n$ by $n_i$, the observed number
+of sites at which there are $i$ derived alleles, and $h$ by $h_i$, the
+number of sites that are heterozygous.'' The natural way to think
+about this is that we are working across sites, rather than
+across individuals.
+
+Why would this be interesting? For a sample $n$, $i$ implies a
+genotype frequency ($i/2n$). For certain sites that have the same
+number of derived alleles $i$ (same frequeny), and we want to estimate
+$F$, as if $i$ is low (i.e. derived mutations are recent, think
+neutral coalecent) a higher $F$ may indicate selection. In fact,
+\citet{Schraiber:2012it} use LRT to determine if a $F$ per $i$ fits
+better than a universal $F$ and the find it does. However, as the
+paper shows, even allowing for $F$ for each $i$, the data are not
+consistent with inbreeding coefficients being the same for each
+individual. This is why they move on to estimate individual-specific
+inbreeding coefficient.
+
+\section{Individual Specific Inbreeding Coefficients}
 
 Rather than just estimate $F_i$, one could estimate $F_j$, the
 inbreeding coefficient per individual $j \in \{1, \ldots, n\}$ (note
@@ -235,8 +266,8 @@ this a different $j$ than before!). Then, we can find the set $(F_1,
 h_{j2}, \ldots, h_{jL})$ in which $h_{jl}$ = 1 if individual $j$ is
 heterozygous at site $l$ and 0 otherwise (note: don't we need $i_l$?).
 
-The exact likelihood is hard, so we compute the \emph{composite
-  likliehood}. Composite likelihoods are also known as pseudo-likelihoods
+The exact likelihood is hard, so we compute the \emph{composite 
+likliehood}. Composite likelihoods are a type of pseudo-likelihood
 because they don't fully specify the \emph{real} likelihood
 (probabilistic model). Borrowing an example similar to one in Pawitan
 2013, assume you have a linear spatial distribution of something and
@@ -253,7 +284,7 @@ where observe $(y_1, y_2)$:
 
 $$ p(y_1 \mid y_2) p(y_2 \mid y_1)$$
 
-This is not a likeluhood; the true likelihood is:
+This is not a likelihood; the true likelihood is:
 
 $$ p(y_1) p(y_2 \mid y_1) $$
 
@@ -270,7 +301,7 @@ subscript, as this is at a particular site and I think this is a typo
 in the original). Also:
 
 \begin{equation} \label{eq:schraiber:07}
-\text{P}(h_{j} = 1 \mid F_j, i) = (1 - F_j) \frac{i (2n - i)} {n (2n - 1)}
+\text{P}(h_{jl} = 1 \mid F_j, i) = (1 - F_j) \frac{i (2n - i)} {n (2n - 1)}
 \end{equation}
 
 Note that for some individual $j$'s $F_j$, this probability of being
